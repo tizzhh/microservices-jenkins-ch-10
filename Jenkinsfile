@@ -38,24 +38,27 @@ withPod {
         }
       }
   
-      stage('Deploy') {
-        sh("sed -i.bak 's#BUILD_TAG#${tagToDeploy}#' ./deploy/staging/*.yml")
+      def deploy = load('deploy.groovy')
 
-        container('kubectl') {
-          sh("kubectl --namespace=staging apply -f deploy/staging/")
-        }
+      stage('Deploy to staging') {
+        deploy.toKubernetes(tagToDeploy, 'staging', 'market-data')
       }
 
       stage('Approve release?') {
         input message: "Release ${tagToDeploy} to production?"
       }
 
-      stage('Deploy to production') {
-        sh("sed -i.bak 's#BUILD_TAG#${tagToDeploy}#' ./deploy/production/*.yml")
+      stage('Deploy canary') {
+        deploy.toKubernetes(tagToDeploy, 'canary', 'market-data-canary')
+          try {
+            input message: "Continue releasing ${tagToDeploy} to production?"
+          } catch (Exception e) {
+            deploy.rollback('market-data-canary')
+          }
+      }
 
-        container('kubectl') {
-          sh("kubectl --namespace=production apply -f deploy/production/")
-        }
+      stage('Deploy to production') {
+        deploy.toKubernetes(tagToDeploy, 'production', 'market-data')
       }
 
     }
