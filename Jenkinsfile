@@ -29,7 +29,7 @@ withPod {
         }
       }
 
-      def tagToDeploy = "[your-account]/${service}"
+      def tagToDeploy = "tizzhh/${service}"
 
       stage('Publish') {
         withDockerRegistry(registry: [credentialsId: 'dockerhub']) {
