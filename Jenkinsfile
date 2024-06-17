@@ -24,7 +24,7 @@ withPod {
         try {
             sh("docker run -v `pwd`:/workspace --rm ${service} python setup.py test")
         } finally {
-            step([$class: 'JUnitResultArchiver', testResults: 'results.xml'])
+            junit 'results.xml'
         }
       }
     }
