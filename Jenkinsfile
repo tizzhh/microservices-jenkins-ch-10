@@ -32,7 +32,7 @@ withPod {
       def tagToDeploy = "tizzhh/${service}"
 
       stage('Publish') {
-        withDockerRegistry(registry: [credentialsId: 'dockerhub']) {
+        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
           sh("docker tag ${service} ${tagToDeploy}")
           sh("docker push ${tagToDeploy}")
         }
