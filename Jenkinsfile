@@ -38,7 +38,7 @@ withPod {
         }
       }
   
-stage('Deploy') {
+      stage('Deploy') {
         sh("sed -i.bak 's#BUILD_TAG#${tagToDeploy}#' ./deploy/staging/*.yml")
 
         container('kubectl') {

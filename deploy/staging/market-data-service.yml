@@ -8,6 +8,6 @@ spec:
     app: market-data
     tier: backend
   ports:
-  - protocol: TCP
-    port: 8000
-    targetPort: 30623
+    - protocol: TCP
+      port: 8000
+      nodePort: 30623
